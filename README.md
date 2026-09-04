@@ -1,7 +1,7 @@
 <h1 align="center">BTL-Q</h1>
 
 <p align="center">
-  <strong>암호화폐 시장을 데이터로 뜯어보는 곳</strong><br>
+  <strong>시장을 데이터로 검증하는 곳</strong><br>
   <sub>전략을 <em>만드는</em> 것보다 <em>의심하고 폐기하는</em> 것에 더 무게를 둡니다.</sub>
 </p>
 
@@ -18,10 +18,25 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/market-Upbit%20KRW-1f6feb?style=flat-square" alt="Upbit KRW">
   <img src="https://img.shields.io/badge/focus-factor%20%26%20risk%20models-6f42c1?style=flat-square" alt="Factor & Risk Models">
-  <img src="https://img.shields.io/badge/hours-24%2F7-2da44e?style=flat-square" alt="24/7">
+  <img src="https://img.shields.io/badge/focus-backtest%20validation-6f42c1?style=flat-square" alt="Backtest Validation">
 </p>
+
+---
+
+## 자산군
+
+방법론이 주인공이고, 자산군은 그것을 검증하는 무대입니다.
+같은 코드가 시장을 바꿔 끼워도 돌아가는 것을 목표로 합니다.
+
+| | 지금 | 무엇 때문에 |
+|:---|:---:|:---|
+| **암호화폐** | ![active](https://img.shields.io/badge/-진행중-2da44e?style=flat-square) | 데이터·주문·호가까지 마찰 없이 열려 있어 **전 과정을 끝까지 돌려보기 좋음**. 24/7이라 표본도 빨리 쌓임 |
+| **주식 (KRX · US)** | ![planned](https://img.shields.io/badge/-확장중-0969da?style=flat-square) | 재무·수급처럼 크립토에 **아예 없는 축**이 있음. 상장폐지 이력이 남아 생존편향을 다룰 수 있음 |
+
+> 두 시장은 서로의 약점을 메웁니다.
+> 크립토는 마이크로구조 데이터가 열려 있는 대신 역사가 짧고 상폐 코인이 흔적 없이 사라집니다.
+> 주식은 그 반대입니다.
 
 ---
 
@@ -43,7 +58,7 @@ Look-ahead bias, 생존 편향, 과최적화.
 
 ### 2. 숫자에는 불확실성을 같이 적는다
 
-β 하나만 쓰지 않고 **표준오차와 신뢰구간**을 함께 둡니다.
+점추정 하나만 쓰지 않고 **표준오차와 신뢰구간**을 함께 둡니다.
 p값이 유의하지 않으면 화면에 "무의미"라고 적습니다.
 
 </td>
@@ -74,7 +89,7 @@ Out-of-Sample에서 **얼마나 무너지는지**를 같이 보여줍니다.
 
 | 저장소 | 무엇인가 | 상태 |
 |:---|:---|:---:|
-| **[BTC_Dashboard](https://github.com/BTL-Q/BTC_Dashboard)** | 코인 간 영향력 분석 — 시장모형 회귀(β·R²)로 *"이 코인이 기준 코인에 얼마나 끌려다니는가"* 를 측정 | ![WIP](https://img.shields.io/badge/-작업중-fbca04?style=flat-square) |
+| **[BTC_Dashboard](https://github.com/BTL-Q/BTC_Dashboard)** | 시장모형 회귀로 개별 종목이 기준 자산에 얼마나 끌려다니는지 측정 (β·R²·α·σ_ε) | ![WIP](https://img.shields.io/badge/-작업중-fbca04?style=flat-square) |
 
 <!-- 프로젝트가 늘어나면 여기에 한 줄씩 추가 -->
 
@@ -82,36 +97,39 @@ Out-of-Sample에서 **얼마나 무너지는지**를 같이 보여줍니다.
 
 ## 지금 파고 있는 것
 
-### 시장모형 회귀 — 알트코인은 정말 독립적인 베팅인가
+### 시장모형 회귀 — 이건 정말 독립적인 베팅인가
 
-$$r_{coin,t} = \alpha + \beta \cdot r_{base,t} + \varepsilon_t$$
+$$r_{i,t} = \alpha + \beta \cdot r_{m,t} + \varepsilon_t$$
 
-기준 코인(BTC 등) 수익률에 다른 코인을 회귀시켜 세 가지를 분리합니다.
+기준 자산(시장) 수익률에 개별 종목을 회귀시켜 세 가지를 분리합니다.
+주식에서는 **CAPM 베타**, 크립토에서는 **BTC 베타** — 같은 식에 $r_m$ 만 바꿔 끼웁니다.
 
 | 기호 | 의미 | 읽는 법 |
 |:---:|:---|:---|
-| **β** | 민감도 | 기준 코인이 1% 움직일 때의 반응 폭 |
-| **R²** | 영향력 | 이 코인 움직임 중 기준 코인으로 설명되는 비율 |
-| **σ_ε** | 고유 변동성 | 기준 코인을 제거하고 남은 몫 — 분산투자로 줄일 수 있는 부분 |
+| **β** | 민감도 | 시장이 1% 움직일 때의 반응 폭 |
+| **R²** | 설명력 | 이 종목 움직임 중 시장으로 설명되는 비율 |
+| **σ_ε** | 고유 변동성 | 시장을 제거하고 남은 몫 — 분산투자로 줄일 수 있는 부분 |
 
 > **β와 R²는 서로 독립입니다.**
 > 크게 반응하는 것(β)과 충실하게 따라가는 것(R²)은 다른 질문이고,
 > 포트폴리오를 짤 때 실제로 중요한 건 후자입니다.
 
 **여기서 나온 것** — 관측 주기를 짧게 자를수록 측정되는 상관이 깎여 나갑니다 (Epps effect).
-같은 코인이 일봉에서 R² 58%인데 시간봉에서는 50%로 떨어집니다.
-*"이 코인의 베타는 얼마"* 라는 문장은 **어느 주기, 어느 구간에서** 를 빼면 의미가 없습니다.
+같은 자산이 일봉에서 R² 58%인데 시간봉에서는 50%로 떨어집니다.
+*"이것의 베타는 얼마"* 라는 문장은 **어느 주기, 어느 구간에서** 를 빼면 의미가 없습니다.
 
 ---
 
 ## 로드맵
 
 ```
-✅  코인 영향력 분석 — 시장모형 회귀 (β · R² · α · σ_ε)
+✅  시장모형 회귀 — β · R² · α · σ_ε 분해
 🚧  대시보드 공개 배포
+⬜  기준 자산 일반화 — BTC / KOSPI / S&P500 교체 가능하게
 ⬜  롤링 회귀 — 관계가 시간에 따라 얼마나 불안정한지 정량화
 ⬜  Walk-Forward 검증 프레임
 ⬜  리스크 사이징 — Kelly · Risk Parity 비교
+⬜  주식 트랙 — 재무(DART) · 수급(외인/기관) 팩터
 ⬜  전략 라이프사이클 파이프라인 (탐색 → 백테스트 → 검증 → 페이퍼)
 ```
 
